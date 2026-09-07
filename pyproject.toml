@@ -1,0 +1,33 @@
+[project]
+name = "realtime-ml-decision-engine"
+version = "0.1.0"
+description = "Distributed real-time ML risk and decision engine"
+requires-python = ">=3.11"
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "xgboost",
+    "pydantic",
+    "pyarrow",
+    "pyyaml",
+    "joblib",
+    "fastapi",
+    "uvicorn[standard]",
+    "prometheus-client",
+    "redis",
+    "kafka-python",
+    "feast[redis]",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "httpx",
+    "fakeredis",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

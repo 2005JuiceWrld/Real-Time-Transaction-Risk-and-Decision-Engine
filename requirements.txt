@@ -1,0 +1,22 @@
+# Runtime dependencies for the containerized services (api, producer,
+# stream-scorer, and the one-off data-gen/train jobs) — see docker/app/Dockerfile.
+#
+# Feast is deliberately excluded: it is only ever run as a one-off, host-side
+# demo (scripts/build_feast_offline_source.py, scripts/materialize_feast.py,
+# scripts/demo_feast_point_in_time.py), not as a standing container — see
+# docs/understanding.md for why. Test-only dependencies (pytest, httpx,
+# fakeredis) live in pyproject.toml's [dependency-groups] instead, since
+# tests never run inside these images.
+numpy
+pandas
+scikit-learn
+xgboost
+pydantic
+pyarrow
+pyyaml
+joblib
+fastapi
+uvicorn[standard]
+prometheus-client
+redis
+kafka-python

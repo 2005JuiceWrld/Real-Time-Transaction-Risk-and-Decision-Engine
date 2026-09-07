@@ -1,0 +1,51 @@
+# Decision engine policy — deliberately data, not code, so an operator can
+# retune thresholds without touching (or redeploying) the service.
+#
+# risk <  thresholds.allow_below        -> ALLOW
+# thresholds.allow_below <= risk <      -> REVIEW
+#   thresholds.block_at_or_above
+# risk >= thresholds.block_at_or_above  -> BLOCK
+
+thresholds:
+  allow_below: 0.30
+  block_at_or_above: 0.75
+
+# Human-readable reason codes, evaluated independently of the model score.
+# These make a decision explainable ("why was this reviewed?") without
+# needing to inspect the model itself, and they still fire even for a
+# borderline score that a raw probability wouldn't explain on its own.
+reason_codes:
+  - code: NEW_DEVICE
+    feature: is_new_device
+    op: ">="
+    value: 1
+    description: "Transaction from a device never seen before in this user's history."
+
+  - code: HIGH_VELOCITY
+    feature: txn_count_5m
+    op: ">="
+    value: 3
+    description: "3 or more transactions from this user in the last 5 minutes."
+
+  - code: AMOUNT_ANOMALY
+    feature: amount_zscore_30d
+    op: ">="
+    value: 3.0
+    description: "Amount is a significant outlier versus this user's 30-day baseline."
+
+  - code: RECENT_AUTH_FAILURES
+    feature: auth_failure_count_1h
+    op: ">="
+    value: 1
+    description: "One or more failed authentication attempts in the last hour."
+
+  - code: MULTIPLE_LOCATIONS
+    feature: distinct_locations_24h
+    op: ">="
+    value: 2
+    description: "More than one distinct location seen for this user in the last 24 hours."
+
+# Fallback reason code attached when the model pushes a REVIEW/BLOCK
+# decision but none of the rules above fired — i.e. the model saw a pattern
+# across several features at once that no single rule captures on its own.
+fallback_reason_code: MODEL_HIGH_RISK

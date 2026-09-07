@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Generated data & model artifacts — reproducible via:
+#   python -m scripts.generate_historical_data
+#   python -m scripts.train_model
+# risk_model_metadata.json is tracked deliberately: it's small, human-readable,
+# and shows real trained results without anyone having to run anything.
+data/*.parquet
+data/decision_log.jsonl
+data/feast_registry.db
+models/*.joblib
+
+# Feast
+feature_repo/.feast/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code session internals — not part of the project
+.claude/

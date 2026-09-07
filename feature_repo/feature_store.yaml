@@ -1,0 +1,20 @@
+project: realtime_ml_decision_engine
+provider: local
+registry: ../data/feast_registry.db
+
+# A separate Redis logical database (db=1) from the one the synchronous
+# scoring path uses (db=0, see src/features/feature_store_client.py) — same
+# container, two clearly separated namespaces, so "the fast per-transaction
+# state" and "Feast's periodically-materialized snapshot" are never at risk
+# of colliding on a key. This file is for running Feast from the host
+# (`feast apply`, the demo script); docker-compose mounts
+# feature_store.docker.yaml over this path instead, pointing at the `redis`
+# service hostname rather than localhost.
+online_store:
+  type: redis
+  connection_string: "localhost:6379,db=1"
+
+offline_store:
+  type: file
+
+entity_key_serialization_version: 3

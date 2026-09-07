@@ -1,0 +1,16 @@
+project: realtime_ml_decision_engine
+provider: local
+registry: ../data/feast_registry.db
+
+# Same as feature_store.yaml, but for running inside docker-compose, where
+# Redis is reachable at the `redis` service hostname rather than localhost.
+# docker-compose mounts this file over feature_repo/feature_store.yaml in
+# the container.
+online_store:
+  type: redis
+  connection_string: "redis:6379,db=1"
+
+offline_store:
+  type: file
+
+entity_key_serialization_version: 3

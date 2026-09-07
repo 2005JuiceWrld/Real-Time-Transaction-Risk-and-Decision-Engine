@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  # The synchronous HTTP scoring path (src/serving/api.py).
+  - job_name: decision-api
+    static_configs:
+      - targets: ["api:8000"]
+
+  # The Kafka-driven streaming scoring path (src/serving/stream_scorer.py).
+  # Same metric names as decision-api (see src/serving/metrics.py) — a
+  # Grafana panel means the same thing regardless of which target it came
+  # from, distinguished only by the `source` label on each metric.
+  - job_name: decision-stream-scorer
+    static_configs:
+      - targets: ["stream-scorer:8001"]
